@@ -7,7 +7,6 @@ library(readxl)
 Household <- read_dta("D:\\NFHS\\NFHS5\\IAPR7EDT Household Member Recode\\IAPR7EFL.DTA")
 Household$shdist <- as.character(Household$shdist)
 
-
 Districts <- read_xlsx("D:\\NFHS\\NFHS5\\NFHS_District_Occupation.xlsx",sheet = "NFHS_District")
 Districts$`District number` <- as.character(Districts$`District number`)
 Household <- Household %>% left_join(Districts, by = c("shdist" = "District number"))
@@ -361,11 +360,58 @@ write.csv(Household_req_f1,"D:\\NFHS\\NFHS5\\weight_adult[23-06-2025].csv")
 
 
 
+#NFHS5
+Children <- read_dta("D:\\NFHS\\NFHS5\\IAKR7EDT Children Recode\\IAKR7EFL.DTA")
+
+Children_1  <-Children %>% select(caseid,b4,hw1,hw2,hw3) 
+  
+  
+Children_1$hw2 <- ifelse(Children_1$hw2 > 9000, NA,Children_1$hw2/10)
+Children_1$hw3 <- ifelse(Children_1$hw3 > 9000, NA,Children_1$hw3/10)
+
+
+results <- anthro_zscores(
+  sex     = Children_1$b4,       # 1 = male, 2 = female
+  age     = Children_1$hw1,      # in months
+  weight  = Children_1$hw2,      # in kg
+  lenhei  = Children_1$hw3,      # in cm
+)
+
+Children_1$haz <- results$zlen        # Height-for-age z-score
+Children_1$waz <- results$zwei        # Weight-for-age z-score
+Children_1$whz <- results$zwfl        # Weight-for-height z-score
+
+
+Children_1$stunted <- ifelse(is.na(Children_1$haz), NA, ifelse(Children_1$haz < -2, 1, 0))
+Children_1$wasted <- ifelse(is.na(Children_1$whz), NA, ifelse(Children_1$whz < -2, 1, 0))
+Children_1$underweight <- ifelse(is.na(Children_1$waz), NA, ifelse(Children_1$waz < -2, 1, 0))
+
+
+stunted_summary <- Children_1 %>% 
+  summarise(
+    N = sum(!is.na(stunted)),
+    n = sum(stunted, na.rm = TRUE),         # Total stunted (count)
+    per = mean(stunted, na.rm = TRUE) * 100 # Percent stunted
+  ) %>% 
+  mutate(Indicator = "Stunting")
 
 
 
+wasted_summary <- Children_1 %>% 
+  summarise(
+    N = sum(!is.na(wasted)),
+    n = sum(wasted, na.rm = TRUE),         # Total wasted (count)
+    per = mean(wasted, na.rm = TRUE) * 100 # Percent wasted
+  ) %>% 
+  mutate(Indicator = "Wasting")
+
+underweight_summary <- Children_1 %>% 
+  summarise(
+    N = sum(!is.na(underweight)),
+    n = sum(underweight, na.rm = TRUE),         # Total underweight (count)
+    per = mean(underweight, na.rm = TRUE) * 100 # Percent underweight
+  ) %>% 
+  mutate(Indicator = "underweight")
 
 
-
-
-
+summary <- rbind(stunted_summary,wasted_summary,underweight_summary)
