@@ -359,13 +359,10 @@ write.csv(Household_req_f1,"D:\\NFHS\\NFHS5\\weight_adult[30-07-2025].csv")
 
 
 
-
 #NFHS5
 Children <- read_dta("D:\\NFHS\\NFHS5\\IAKR7EDT Children Recode\\IAKR7EFL.DTA")
 
 Children_1  <-Children %>% select(caseid,b4,hw1,hw2,hw3) 
-  
-  
 Children_1$hw2 <- ifelse(Children_1$hw2 > 9000, NA,Children_1$hw2/10)
 Children_1$hw3 <- ifelse(Children_1$hw3 > 9000, NA,Children_1$hw3/10)
 
@@ -415,3 +412,7 @@ underweight_summary <- Children_1 %>%
 
 
 summary <- rbind(stunted_summary,wasted_summary,underweight_summary)
+
+
+
+
