@@ -229,37 +229,39 @@ Household_req_f <- Household_req %>% select(cluster_number,household_number,line
                                             weight,height,bmi,measurement_reason,waistcurcumference,hipcurcumference,armcircumference)
 
 
-Men <-read_dta("D:\\NFHS\\NFHS5\\IAMR7EDT Men Recode\\IAMR7EFL.DTA",col_select = c("mv001","mv002","mv003","mv106","mv714","mv716","mv717","sm604","sm607","sm619","sm627a","sm627b"))
-Women <- read_dta("D:/NFHS/NFHS5/IAIR7EDT Individual Recode/IAIR7EFL.DTA", col_select = c("v001","v002","v003","v106","v714","v716","v717","v463a","s708","s720","s728a","s728b"))
+Men <- read_dta("D:\\NFHS\\NFHS5\\IAMR7EDT Men Recode\\IAMR7EFL.DTA",col_select = c("mv001","mv002","mv003","mv005","mv106","mv714","mv716","mv717","sm604","sm607","sm619","sm627a","sm627b"))
+Women <- read_dta("D:/NFHS/NFHS5/IAIR7EDT Individual Recode/IAIR7EFL.DTA", col_select = c("v001","v002","v003","v005","v106","v714","v716","v717","v463a","s708","s720","s728a","s728b"))
 
 #Rename the variables
 Men <- Men %>% rename("cluster_number" = mv001,
-                          "household_number"   = mv002,
-                          "line_number"  = mv003,
-                          "educational_level" = mv106,
-                          "currently_working" = mv714,
-                          "occupation_code" =  mv716,
-                          "occupation_grouped" = mv717,
-                          "smokes_cigarettes" = sm604,
-                          "smoke_bidis" = sm607,
-                          "drink_alcohol" = sm619,
-                          "diabetes" = sm627a,
-                          "hypertension" =  sm627b)
+                      "household_number"   = mv002,
+                      "line_number"  = mv003,
+                      "Individual_sample_weight"  = mv005,
+                      "educational_level" = mv106,
+                      "currently_working" = mv714,
+                      "occupation_code" =  mv716,
+                      "occupation_grouped" = mv717,
+                      "smokes_cigarettes" = sm604,
+                      "smoke_bidis" = sm607,
+                      "drink_alcohol" = sm619,
+                      "diabetes" = sm627a,
+                      "hypertension" =  sm627b)
 
 
 #Rename the variables
 Women <- Women %>% rename("cluster_number" = v001,
-                             "household_number"   = v002,
-                             "line_number"  = v003,
-                             "educational_level" = v106,
-                             "currently_working" = v714,
-                             "occupation_code" =  v716,
-                             "occupation_grouped" = v717,
-                             "smokes_cigarettes" = v463a,
-                             "smoke_bidis" = s708,
-                             "drink_alcohol" = s720,
-                             "diabetes" = s728a,
-                             "hypertension" =  s728b)
+                          "household_number"   = v002,
+                          "line_number"  = v003,
+                          "Individual_sample_weight"  = v005,
+                          "educational_level" = v106,
+                          "currently_working" = v714,
+                          "occupation_code" =  v716,
+                          "occupation_grouped" = v717,
+                          "smokes_cigarettes" = v463a,
+                          "smoke_bidis" = s708,
+                          "drink_alcohol" = s720,
+                          "diabetes" = s728a,
+                          "hypertension" =  s728b)
 
 
 
@@ -304,8 +306,6 @@ Men_Women <- Men_Women %>%
     occupation_grouped == 98 ~ "Don't know",
     TRUE                     ~ NA_character_
   ))
-
-
 
 
 
@@ -354,7 +354,7 @@ Household_req_f1 <- Household_req_f %>% left_join(Men_Women, by = c("cluster_num
 
 
 
-write.csv(Household_req_f1,"D:\\NFHS\\NFHS5\\weight_adult[23-06-2025].csv")
+write.csv(Household_req_f1,"D:\\NFHS\\NFHS5\\weight_adult[30-07-2025].csv")
 
 
 
