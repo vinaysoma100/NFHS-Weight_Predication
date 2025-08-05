@@ -20,15 +20,14 @@ Data_1$height <- ifelse(!is.na(Data_1$bmi),Data_1$height,NA)
 Data_1$bmi <- ifelse(!is.na(Data_1$weight) & !is.na(Data_1$height),Data_1$bmi,NA)
 Data_1
 
-summary(Data_1)
+summary(Data_1) 
 
 Data_1$bmi_missing <- ifelse(is.na(Data_1$bmi), 1, 0)
 Data_1$weight_missing <- ifelse(is.na(Data_1$weight), 1, 0)
 model <- glm(weight_missing ~ age + gender + community + type_of_residence +  educational_level+ wealthindex,
              data = Data_1, family = binomial)
-summary(model)
-library(naniar)
-gg_miss_upset(Data_1, nsets = 10)
-library(ggplot2)
-ggplot(Data_1, aes(x = age, fill = is.na(bmi))) + geom_histogram(position = "dodge", bins = 30)
+
+
+
+ggplot(Data_1, aes(x = age, fill = is.na(weight))) + geom_histogram(position = "dodge", bins = 30)
 
